@@ -3,9 +3,32 @@ import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../firebaseConfig";
 import { signOut } from "firebase/auth";
 import logo from "../assets/react.svg";
+import { useEffect, useState } from "react";
 
 const NavBar = () => {
+  const [button, setButton] = useState(true);
+  const [logOutButton, setLogOutButton] = useState(true);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (
+      window.location.href.includes("signup") ||
+      window.location.href.includes("signin") ||
+      window.location.href.includes("add")
+    ) {
+      setButton(false);
+    } else {
+      setButton(true);
+    }
+    if (
+      window.location.href.includes("signup") ||
+      window.location.href.includes("signin")
+    ) {
+      setLogOutButton(false);
+    } else {
+      setLogOutButton(true);
+    }
+  });
 
   const handleLogOut = () => {
     signOut(auth)
@@ -33,13 +56,17 @@ const NavBar = () => {
         <Menu.Item>
           <h2>React Firebse CRUD with Upload Image</h2>
         </Menu.Item>
-        <Menu.Item position="right">
-          <Button size="mini" primary onClick={() => navigate("/add")}>
-            Add User
-          </Button>
-          <Button color="purple" onClick={handleLogOut}>
-            Log Out
-          </Button>
+        <Menu.Item style={{ gap: "15px" }} position="right">
+          {button && (
+            <Button size="mini" primary onClick={() => navigate("/add")}>
+              Add User
+            </Button>
+          )}
+          {logOutButton && (
+            <Button color="purple" onClick={handleLogOut}>
+              Log Out
+            </Button>
+          )}
         </Menu.Item>
       </Container>
     </Menu>
