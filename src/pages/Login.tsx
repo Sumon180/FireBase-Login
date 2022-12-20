@@ -5,11 +5,11 @@ import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
 const Singin = () => {
-  const navigate = useNavigate();
-
   let [email, setEmail] = useState("");
   let [password, setPassword] = useState("");
   let [err, setErr] = useState("");
+
+  const navigate = useNavigate();
 
   let handleSubmit = () => {
     if (!email && !password) {

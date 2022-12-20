@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Button, Form, Grid, Loader } from "semantic-ui-react";
 import { storage, db } from "../firebaseConfig";
 import { useNavigate, useParams } from "react-router-dom";
@@ -31,64 +31,63 @@ const AddEditUser = () => {
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(null);
   const [error, setError] = useState({});
+  const [url, setUrl] = useState("");
   const [isSubmit, setIsSubmit] = useState(false);
+
   const { id } = useParams();
   const navigate = useNavigate();
 
+  // useEffect(() => {
+  //   id && getSingleUser();
+  // }, [id]);
+
+  // type userData = {
+  //   name: string;
+  //   email: string;
+  //   info: string;
+  //   contact: string;
+  // };
+
+  // const getSingleUser = async () => {
+  //   const docRef = doc(db, "users", id + "151");
+  //   const snapshot = await getDoc(docRef);
+  //   if (snapshot.exists()) {
+  //     setData(snapshot.data() as userData);
+  //   }
+  // };
+
   useEffect(() => {
-    id && getSingleUser();
-  }, [id]);
+    // const name = new Date().getTime() + file.name;
+    const storageRef = ref(storage, `images/${Date.now()}-${file.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
 
-  type userData = {
-    name: string;
-    email: string;
-    info: string;
-    contact: string;
-  };
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress: any =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setProgress(progress);
 
-  const getSingleUser = async () => {
-    const docRef = doc(db, "users", id + "151");
-    const snapshot = await getDoc(docRef);
-    if (snapshot.exists()) {
-      setData(snapshot.data() as userData);
-    }
-  };
-
-  useEffect(() => {
-    const uploadFile = () => {
-      const name = new Date().getTime() + file.name;
-      const storageRef = ref(storage, file.name);
-      const uploadTask = uploadBytesResumable(storageRef, file.name);
-
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress: any =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setProgress(progress);
-
-          switch (snapshot.state) {
-            case "paused":
-              console.log("Upload is Pause");
-              break;
-            case "running":
-              console.log("Upload is Running");
-              break;
-            default:
-              break;
-          }
-        },
-        (error) => {
-          console.log(error);
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setData((prev) => ({ ...prev, img: downloadURL }));
-          });
+        switch (snapshot.state) {
+          case "paused":
+            console.log("Upload is Pause");
+            break;
+          case "running":
+            console.log("Upload is Running");
+            break;
+          default:
+            break;
         }
-      );
-    };
-    file && uploadFile();
+      },
+      (error) => {
+        console.log(error);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setData((prev) => ({ ...prev, img: downloadURL }));
+        });
+      }
+    );
   }, [file]);
 
   const handleChange = (e: any) => {
@@ -108,6 +107,7 @@ const AddEditUser = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+
     let errors = validate();
     if (Object.keys(errors).length) return setError(errors);
     setIsSubmit(true);

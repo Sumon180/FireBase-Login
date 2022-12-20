@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { Button, Card, Grid, Container, Image } from "semantic-ui-react";
 import { db } from "../firebaseConfig";
-import { useNavigate } from "react-router-dom";
+import { Button, Card, Grid, Container, Image } from "semantic-ui-react";
+import { useNavigate, useParams } from "react-router-dom";
 import { collection, onSnapshot } from "firebase/firestore";
 
 const Home = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  // const { id } = useParams();
 
   useEffect(() => {
     setLoading(true);
@@ -33,6 +34,10 @@ const Home = () => {
   return (
     <>
       <Container>
+        <h1>Users Information</h1>
+        <hr />
+        <br />
+        <br />
         <Card.Group>
           <Grid columns={3} stackable>
             {users &&

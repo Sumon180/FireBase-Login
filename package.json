@@ -14,7 +14,8 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.5",
     "semantic-ui-css": "^2.5.0",
-    "semantic-ui-react": "^2.1.4"
+    "semantic-ui-react": "^2.1.4",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.26",

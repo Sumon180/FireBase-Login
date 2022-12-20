@@ -8,6 +8,7 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import SignInWithGoogle from "./SignInWithGoogle";
 
 const Singup = () => {
   const navigate = useNavigate();
@@ -62,6 +63,8 @@ const Singup = () => {
     <div id="singup">
       <div className="singup">
         <h2>Create a account!</h2>
+        <SignInWithGoogle />
+        <h2>Or</h2>
         <input
           onChange={(e) => setName(e.target.value)}
           type="text"
@@ -79,6 +82,7 @@ const Singup = () => {
         />
         <p>{err}</p>
         <button onClick={handleSubmit}>Singup</button>
+
         <Link to="/signin">You have already account? Singin</Link>
       </div>
     </div>
